@@ -1,7 +1,7 @@
 const readlineSync = require("readline-sync");
 
 class Avaliacao {
-    static notaminima = 6; 
+    static notaminima = 6;
 
     constructor(matricula, presenca, nota1, nota2, substitutiva, cargaTotalAulas) {
         this.matricula = matricula;
@@ -10,7 +10,7 @@ class Avaliacao {
         this.nota2 = nota2;
         this.substitutiva = substitutiva;
         this.cargaTotalAulas = cargaTotalAulas;
-        this.notaMinima = Avaliacao.notaminima; 
+        this.notaMinima = Avaliacao.notaminima;
     }
 
     aprovadoPorFrequencia() {
@@ -19,7 +19,7 @@ class Avaliacao {
 
     calcularMedia() {
         let media = (this.nota1 + this.nota2) / 2;
-        if (media < this.notaMinima) {
+        if (media < this.notaMinima && this.substitutiva > 0) {
             if (this.nota1 > this.nota2) {
                 media = (this.substitutiva + this.nota1) / 2;
             } else {
@@ -38,7 +38,6 @@ class Avaliacao {
     }
 }
 
-
 function main() {
     let alunos = [];
     const quantidadeAlunos = 5;
@@ -49,7 +48,12 @@ function main() {
         const presenca = parseInt(readlineSync.question("Digite a quantidade de aulas que o aluno esteve presente: "));
         const nota1 = parseFloat(readlineSync.question("Digite a nota 1 do aluno: "));
         const nota2 = parseFloat(readlineSync.question("Digite a nota 2 do aluno: "));
-        const substitutiva = parseFloat(readlineSync.question("Digite a nota da substitutiva do aluno: "));
+        let substitutiva = 0;
+
+        if ((nota1 + nota2) / 2 < Avaliacao.notaminima) {
+            substitutiva = parseFloat(readlineSync.question("Digite a nota da substitutiva do aluno: "));
+        }
+
         const cargaTotalAulas = parseInt(readlineSync.question("Digite a carga total de aulas da disciplina: "));
 
         alunos.push(new Avaliacao(matricula, presenca, nota1, nota2, substitutiva, cargaTotalAulas));
@@ -63,7 +67,6 @@ function main() {
         console.log(`Aprovado por nota: ${aluno.aprovadoPorNota() ? "Sim" : "Não"}`);
         console.log(`Aprovado no curso: ${aluno.aprovado() ? "Sim" : "Não"}`);
     });
-    
 }
 
 main();
